@@ -1,20 +1,10 @@
-
-/*
- * Program to sub to cmd_vel and move robot accordingly
- * 
- * Encoder counts being recorded but not being used
- * 
- * TODO: Use encoder as secondary odom source to improve localization
- * 
- */
-
 #include <util/atomic.h>
 #include <math.h>
  
 #include <ros.h>
 #include <geometry_msgs/Twist.h>
 
-// Right motor pins
+// Right motor pins (Arduino Mega)
 const int RENCA {18};
 const int RENCB {19};
 const int RPWM {5};
@@ -29,10 +19,8 @@ const int LDIR {13};
 // for velocity calculation
 const float wheel_base {0.27};
 
-// robot direction
+//0.27- Wheel base =  Axle length 
 
-
-// for encoder count
 //const float counts_per_rotation = 420.0f;
 volatile long right_counter{0}, left_counter{0};
 
@@ -48,8 +36,9 @@ void move_right_motor(float V,float omega){
   bool dir = (right_vel < 0 )? true : false;
   digitalWrite(RDIR,dir);
 
+  // Pulse Width Modulation
   // calculate signal using linear eq found emperically
-  int pwm = 5.81 * right_vel + 7.56;
+  int pwm = 5.81 * right_vel + 7.56;   // proportional constant and y intercept to found manually 
 
   // clip pwm signal if is stopped
   pwm = ((V == 0) && (omega == 0))? 0 : pwm;
@@ -68,7 +57,7 @@ void move_left_motor(float V, float omega){
   digitalWrite(LDIR,dir);
 
   // calculate signal using linear eq found emperically
-  int pwm = 5.93 * left_vel + 6.71;
+  int pwm = 5.93 * left_vel + 6.71;    // proportional constant and y intercept to found manually 
 
   // clip pwm signal if is stopped
   pwm = ((V == 0) && (omega == 0))? 0 : pwm;
@@ -105,7 +94,7 @@ void setup() {
   
   attachInterrupt(digitalPinToInterrupt(RENCA), update_right_counter, RISING);
   attachInterrupt(digitalPinToInterrupt(LENCA), update_left_counter, RISING);  
-
+//low to high - RISING trigger
   nh.initNode();
   nh.subscribe(sub);
 
@@ -118,7 +107,7 @@ void loop() {
     read_left_counter = left_counter;
   }
 
-  nh.spinOnce();
+  nh.spinOnce(); //returns when ros node shut down
   delay(1);
 
   
