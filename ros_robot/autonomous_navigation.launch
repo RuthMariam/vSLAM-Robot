@@ -24,7 +24,7 @@
     <!-- Obstacle pointcloud for local planner -->
     <node pkg="nodelet" type="nodelet" name="standalone_nodelet"  args="manager"/>
     <node pkg="nodelet" type="nodelet" name="obstacles_detection" args="load rtabmap_ros/obstacles_detection standalone_nodelet">
-        <remap from="cloud" to="/camera/depth_registered/points"/>
+        <remap from="cloud" to="/camera/depth_registered/points"/> <!-- camera dependent topics-->
         <remap from="obstacles" to="obstacles"/>
 
         <param name="frame_id" type="string" value="base_link"/>
