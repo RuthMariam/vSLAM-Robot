@@ -7,22 +7,17 @@ int main(int argc, char** argv){
 
   ros::Rate r(100);
 
-  tf::TransformBroadcaster broadcaster1;
-  //tf::TransformBroadcaster broadcaster2;
-  
+  tf::TransformBroadcaster broadcaster;
+ 
 
   while(n.ok()){
-    broadcaster1.sendTransform(
+    broadcaster.sendTransform(
       tf::StampedTransform(
         tf::Transform(tf::Quaternion(0, 0, 0, 1), tf::Vector3(0.17, 0.0, 0)),
         ros::Time::now(),"base_link", "camera_link"));
-    
-    /*
-    broadcaster2.sendTransform(
-      tf::StampedTransform(
-        tf::Transform(tf::Quaternion(0, 0, 0, 1), tf::Vector3(0.0, 0.0, 0.0)),
-        ros::Time::now(),"odom", "base_link"));
-    */  
+    /* (0.17) -  centre point camera to centre point robot- 
+    https://navigation.ros.org/setup_guides/transformation/setup_transforms.html */
+   /* Quarternion min length -1 , rotation */
     r.sleep();
   }
 }
